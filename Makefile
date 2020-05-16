@@ -12,4 +12,5 @@ create-p12:
 	@sh script/create-p12.sh
 
 create-checksum:
-	@cd target && sha256sum * > checksums.txt
+	@cd target && sha256sum * > sha256sums.txt
+	@cd target && sha512sum * > sha512sums.txt

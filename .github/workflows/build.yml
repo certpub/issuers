@@ -33,13 +33,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        script: |
-          for env in $(ls src); do
-            upload \
-              -f target/certpub-$env-${TAG}.pem \
-              -n "certpub-$env-${TAG}.pem" \
-              -t "application/x-pem-file"
-          done
+        files: target/certpub-*.pem
+        type: application/x-pem-file
 
     - name: Publish p12-files
       uses: klakegg/github-upload@v0.9.1
@@ -47,18 +42,13 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        script: |
-          for env in $(ls src); do
-            upload \
-              -f target/certpub-$env-${TAG}.p12 \
-              -n "certpub-$env-${TAG}.p12" \
-              -t "application/x-pkcs12"
-          done
+        files: target/certpub-*.p12
+        type: application/x-pkcs12
 
-    - name: Publish checksums
+    - name: Publish checksum files
       uses: klakegg/github-upload@v0.9.1
       if: startsWith(github.ref, 'refs/tags/')
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        file: target/checksums.txt
+        files: target/*sums.txt
