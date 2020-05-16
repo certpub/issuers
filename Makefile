@@ -1,4 +1,4 @@
-default: clean create-pem create-p12
+default: clean create-pem create-p12 create-checksum
 
 clean:
 	@rm -rf target
@@ -10,3 +10,6 @@ create-pem:
 create-p12:
 	@mkdir -p target
 	@sh script/create-p12.sh
+
+create-checksum:
+	@cd target && sha256sum * > checksums.txt

@@ -16,6 +16,14 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
+    - name: Set release mode
+      if: startsWith(github.ref, 'refs/tags/')
+      run: echo "::set-env name=REF::$(echo $GITHUB_REF | sed "s:.*/::g")"
+ 
+    - name: Set edge mode
+      if: "!startsWith(github.ref, 'refs/tags/')"
+      run: echo "::set-env name=REF::edge"
+ 
     - name: Build
       run: make
 
@@ -28,7 +36,7 @@ jobs:
         script: |
           for env in $(ls src); do
             upload \
-              -f target/$env.pem \
+              -f target/certpub-$env-${TAG}.pem \
               -n "certpub-$env-${TAG}.pem" \
               -t "application/x-pem-file"
           done
@@ -42,7 +50,15 @@ jobs:
         script: |
           for env in $(ls src); do
             upload \
-              -f target/$env.p12 \
+              -f target/certpub-$env-${TAG}.p12 \
               -n "certpub-$env-${TAG}.p12" \
               -t "application/x-pkcs12"
           done
+
+    - name: Publish checksums
+      uses: klakegg/github-upload@v0.9.1
+      if: startsWith(github.ref, 'refs/tags/')
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        file: target/checksums.txt
