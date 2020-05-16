@@ -5,7 +5,8 @@ on:
     branches:
       - master
   release:
-    types: [published]
+    types:
+      - published
 
 jobs:
   build:
@@ -18,7 +19,22 @@ jobs:
     - name: Build
       run: make
 
-    - uses: klakegg/github-upload@v0.9.1
+    - name: Publish pem-files
+      uses: klakegg/github-upload@v0.9.1
+      if: startsWith(github.ref, 'refs/tags/')
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        script: |
+          for env in $(ls src); do
+            upload \
+              -f target/$env.pem \
+              -n "certpub-$env-${TAG}.pem" \
+              -t "application/x-pem-file"
+          done
+
+    - name: Publish p12-files
+      uses: klakegg/github-upload@v0.9.1
       if: startsWith(github.ref, 'refs/tags/')
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
