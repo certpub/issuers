@@ -47,6 +47,24 @@ jobs:
         files: target/certpub-*.p12
         type: application/x-pkcs12
 
+    - name: Publish jks-files
+      uses: klakegg/github-upload@v0.9.1
+      if: startsWith(github.ref, 'refs/tags/')
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        files: target/certpub-*.jks
+        type: application/x-java-keystore
+
+    - name: Publish readme file
+      uses: klakegg/github-upload@v0.9.1
+      if: startsWith(github.ref, 'refs/tags/')
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        files: target/README.md
+        type: text/markdown
+
     - name: Publish checksum files
       uses: klakegg/github-upload@v0.9.1
       if: startsWith(github.ref, 'refs/tags/')
