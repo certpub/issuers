@@ -22,7 +22,9 @@ jobs:
  
     - name: Set edge mode
       if: "!startsWith(github.ref, 'refs/tags/')"
-      run: echo "::set-env name=REF::edge"
+      run: |
+        echo "::set-env name=REF::edge"
+        echo "::set-env name=TIMESTAMP::$(date -u +%Y%m%d-%H%Mz)"
  
     - name: Build
       run: make
@@ -52,3 +54,10 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         files: target/*sums.txt
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      if: "!startsWith(github.ref, 'refs/tags/')"
+      with:
+        name: certpub-issuers-edge-${{ env.TIMESTAMP }}
+        path: target/*
