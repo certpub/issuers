@@ -19,5 +19,5 @@ create-readme: create-target
 	@sh src/scripts/create-readme.sh
 
 create-checksum: create-target
-	@cd target && sha256sum * > sha256sums.txt
-	@cd target && sha512sum * > sha512sums.txt
+	@cd target && shasum -a 256 * > sha256sums.txt
+	@cd target && shasum -a 512 * > sha512sums.txt
