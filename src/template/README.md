@@ -10,4 +10,4 @@
 
 ## Usage
 
-Password for JKS keystores: `changeit`
+Password for JKS/P12 keystores: `changeit`
